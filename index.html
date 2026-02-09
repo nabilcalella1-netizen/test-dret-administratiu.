@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Dret Administratiu - Bloque 3</title>
+    <style>
+        :root { --primary: #2c3e50; --success: #27ae60; --error: #e74c3c; --bg: #f8f9fa; --white: #ffffff; --border: #dcdde1; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); color: var(--primary); line-height: 1.5; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 2px solid var(--bg); margin-bottom: 20px; padding-bottom: 15px; }
+        .logo-img { max-width: 200px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .stats-bar { display: flex; justify-content: space-between; align-items: center; background: #eef2f3; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; }
+        .question-block { margin-bottom: 35px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+        .question-text { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; display: block; }
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+        .option { padding: 12px 18px; border: 2px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; background: #fff; }
+        .option.correct { background-color: #d4edda !important; border-color: var(--success) !important; color: #155724; }
+        .option.incorrect { background-color: #f8d7da !important; border-color: var(--error) !important; color: #721c24; }
+        .option.locked { cursor: default; }
+        .controls { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--bg); }
+        button { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-next { background-color: var(--primary); color: white; }
+        .btn-next:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        #result-screen { display: none; text-align: center; }
+        .review-section { margin-top: 40px; padding-top: 20px; border-top: 3px solid var(--error); text-align: left; }
+        .review-item { background: #fff; border-left: 5px solid var(--error); padding: 15px; margin-bottom: 20px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .correct-answer-hint { color: var(--success); font-weight: bold; margin-top: 5px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img class="logo-img" src="data:image/png;base64,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O76P779f/X/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/DvfH7/t6ve7/f/X77G3e89fvY/+ff9v/79P/0/9v/D3f9v/
+">
+        <h1>Examen Dret Administratiu</h1>
+        <p>Text literal • 70 preguntes • D01 FA COSES!!</p>
+    </header>
+
+    <div id="quiz-ui">
+        <div class="stats-bar">
+            <span id="page-indicator">Pàgina 1 de 14</span>
+            <span id="score-counter">Encerts: 0 / 70</span>
+        </div>
+        <div id="questions-area"></div>
+        <div class="controls">
+            <button id="next-button" class="btn-next" onclick="changePage()" disabled>Següent &raquo;</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h2>Resultat Final</h2>
+        <h1 id="final-score" style="font-size: 3em;">0/70</h1>
+        <div id="review-area" class="review-section">
+            <h3 style="color: var(--error);">Repàs de les preguntes fallades:</h3>
+            <div id="failed-questions-list"></div>
+        </div>
+        <br>
+        <button class="btn-next" onclick="location.reload()">Tornar a intentar</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "1.- El procediment administratiu es defineix com:", o: ["a) El conjunt d'actes definitius en què es concreta l'actuació de l'administració per arribar a la producció d'un acte o resolució administrativa.", "b) El conjunt d'actes de tràmit en què es concreta l'actuació de l'administració per arribar a la producció d'un acte o resolució administrativa.", "c) El conjunt d'actes definitius en què es concreta l'actuació de l'adminisració de justícia per arribar a la producció d'una resolució jurisdiccional.", "d) La potestat administrativa de producció d'un acte sancionador o el exercici arbitrari per l'administració de les seves potestats."], a: 1 },
+        { q: "2.- No són principis del procediment administratiu.", o: ["a) L'economia processal i la celeritat.", "b) La publicitat i la transparència.", "c) El antiformalisme i la oficialitat.", "d) Totes les opcions responen a principis del procediment administratiu."], a: 3 },
+        { q: "3.- No son formes de acabament del procediment administratiu...", o: ["a) La caducitat i la renuncia.", "b) El desistiment y l'acabament convencional.", "c) Les al·legacions i les proves.", "d) La resolució expressa."], a: 2 },
+        { q: "4.- La caducitat del procediment per inactivitat de l'interessat...", o: ["a) Impedeix que l'interessat pugui tornar a iniciar un nou procediment.", "b) No produeix per si sola la prescripció de les accions del particular ni de l'administració.", "c) Ha de ser declarada d'ofici per l'administració en un termini de 15 dies.", "d) Interromp el termini de prescripció."], a: 1 },
+        { q: "5.- No és una fase del procediment administratiu...", o: ["a) Fase d'iniciació.", "b) Fase d'ordenació.", "c) Fase d'instrucció.", "d) Fase d'impugnació."], a: 3 },
+        { q: "6.- Segons l'article 21 de la Llei 39/2015, l'Administració està obligada a dictar resolució expressa i a notificar-la en tots els procediments qualsevol que sigui la seva forma d'iniciació. Estan exclosos d'aquesta obligació:", o: ["a) Els procediments de responsabilitat patrimonial.", "b) Els supòsits d'acabament del procediment per pacte o conveni.", "c) Els exercicis de drets sotmesos únicament al deure de declaració responsable o comunicació prèvia a l'Administració.", "d) Totes les anteriors respostes són correctes."], a: 2 },
+        { q: "7.- En el procediment administratiu el tràmit d'audiència:", o: ["a) S'ha de realitzar abans de la redacció de la proposta de resolució.", "b) És un tràmit obligatori en tots els procediments.", "c) S'ha de realitzar immediatament abans de dictar la resolució.", "d) Té una durada no inferior a 10 dies ni superior a 15 dies."], a: 2 },
+        { q: "8.- En els procediments iniciats a sol·licitud de l'interessat, el venciment del termini màxim sense haver-se notificat resolució expressa, legitima a l'interessat per entendre-la estimada, excepte en:", o: ["a) Procediments l'estimació dels quals tingués com a conseqüència que es transferissin al sol·licitant o a tercers facultats relatives al domini públic o al servei públic.", "b) Procediments d'impugnació d'actes i disposicions i els de revisió d'ofici a sol·licitud dels interessats.", "c) Procediments de responsabilitat patrimonial de les Administracions Públiques.", "d) Totes les anteriors respostes són correctes."], a: 3 },
+        { q: "9.- El termini per interposar el recurs d'alçada si l'acte és exprés és de:", o: ["a) Quinze dies.", "b) Un mes.", "c) Dos mesos.", "d) Tres mesos."], a: 1 },
+        { q: "10.- Quin recurs s'ha d'interposar contra els actes que no posen fi a la via administrativa?", o: ["a) Recurs de reposició.", "b) Recurs d'alçada.", "c) Recurs extraordinari de revisió.", "d) Recurs contenciós administratiu."], a: 1 },
+        { q: "11.- El termini per interposar el recurs de reposició si l'acte és exprés és de:", o: ["a) Un mes.", "b) Dos mesos.", "c) Tres mesos.", "d) Deu dies."], a: 0 },
+        { q: "12.- Contra la resolució d'un recurs d'alçada:", o: ["a) Es pot interposar recurs de reposició.", "b) Es pot interposar un nou recurs d'alçada.", "c) No es pot interposar cap altre recurs ordinari en via administrativa.", "d) Només es pot interposar recurs extraordinari de revisió si es donen les causes."], a: 2 },
+        { q: "13.- Els actes que exhaureixen la via administrativa poden ser recorreguts potestativament en reposició davant:", o: ["a) El superior jeràrquic de qui els va dictar.", "b) El mateix òrgan que els va dictar.", "c) El Tribunal Contenciós Administratiu.", "d) El Conseller del departament."], a: 1 },
+        { q: "14.- Quin és el termini màxim per dictar i notificar la resolució del recurs d'alçada?", o: ["a) Un mes.", "b) Dos mesos.", "c) Tres mesos.", "d) Sis mesos."], a: 2 },
+        { q: "15.- Si no es dicta resolució en un recurs d'alçada en termini, el silenci s'entén:", o: ["a) Sempre positiu.", "b) Sempre negatiu.", "c) Negatiu, excepte si el recurs s'ha interposat contra la desestimació per silenci d'una sol·licitud.", "d) Positiu, excepte en matèria de domini públic."], a: 2 },
+        { q: "16.- El recurs extraordinari de revisió es pot interposar en el termini de 4 anys des de la notificació de la resolució impugnada quan:", o: ["a) Al dictar-la s'hagués incorregut en error de fet que resulti dels propis documents incorporats a l'expedient.", "b) Apareguin documents de valor essencial per a la resolució de l'assumpte que, encara que siguin posteriors, evoquen l'error.", "c) La resolució s'hagi dictat com a conseqüència de prevaricació o suborn.", "d) S'hagi dictat sense els informes preceptius."], a: 0 },
+        { q: "17.- Les administracions públiques poden rectificar els errors materials, de fet o aritmètics en els seus actes:", o: ["a) En el termini d'un any.", "b) En qualsevol moment, d'ofici o a instància dels interessats.", "c) Només si l'acte no és ferm.", "d) Només mitjançant la declaració de lesivitat."], a: 1 },
+        { q: "18.- La revisió d'ofici d'actes nuls de ple dret requereix el dictamen favorable de:", o: ["a) El Síndic de Greuges.", "b) El Consell de Garanties Estatutàries o òrgan consultiu equivalent.", "c) El Tribunal Superior de Justícia de Catalunya.", "d) El servei jurídic de l'òrgan que dicta l'acte."], a: 1 },
+        { q: "19.- El termini per interposar un recurs contenciós administratiu contra un acte exprés és de:", o: ["a) Un mes.", "b) Dos mesos.", "c) Sis mesos.", "d) Un any."], a: 1 },
+        { q: "20.- Els interessats poden demanar la suspensió de l'execució de l'acte impugnat:", o: ["a) Sempre que s'interposi un recurs.", "b) Només si l'execució pogués causar perjudicis de difícil o impossible reparació.", "c) Només en procediments sancionadors.", "d) Mai, els actes són sempre immediatament executius."], a: 1 },
+        { q: "21.- Quin d'aquests actes NO posa fi a la via administrativa?", o: ["a) Les resolucions dels recursos d'alçada.", "b) Les resolucions d'òrgans que no tinguin superior jeràrquic.", "c) Els actes dictats per directors generals en l'exercici de les seves competències ordinàries.", "d) Els acords o convenis que tinguin la consideració de finalitzadors del procediment."], a: 2 },
+        { q: "22.- La notificació s'ha de practicar per mitjans electrònics obligatòriament per a:", o: ["a) Les persones físiques.", "b) Les persones jurídiques.", "c) Les entitats sense personalitat jurídica.", "d) Les respostes b) i c) són correctes."], a: 3 },
+        { q: "23.- La notificació es considera rebutjada quan:", o: ["a) Han passat 5 dies naturals sense accedir al seu contingut.", "b) Han passat 10 dies naturals des de la posada a disposició sense accedir al seu contingut.", "c) El destinatari no obre el correu electrònic en 24 hores.", "d) Es torna la carta certificada per segona vegada."], a: 1 },
+        { q: "24.- En el còmput de terminis per dies hàbils, s'exclouen:", o: ["a) Dissabtes i diumenges.", "b) Diumenges i festius.", "c) Dissabtes, diumenges i dies declarats festius.", "d) Només els diumenges."], a: 2 },
+        { q: "25.- Si un termini s'expressa en mesos, aquest es computa:", o: ["a) De data a data.", "b) Per períodes de 30 dies.", "c) Excloent els dies inhàbils.", "d) Des del primer dia del mes següent."], a: 0 },
+        { q: "26.- El tràmit de la informació pública:", o: ["a) És obligatori en tots els expedients.", "b) No dóna la condició d'interessat per si mateix.", "c) Obliga l'Administració a respondre individualment a cada al·legació.", "d) Té una durada mínima de 30 dies."], a: 1 },
+        { q: "27.- Quina d'aquestes és una causa de nul·litat de ple dret de l'acte administratiu?", o: ["a) Qualsevol infracció de l'ordenament jurídic.", "b) El defecte de forma que produeixi indefensió.", "c) Els dictats prescindint totalment del procediment legalment establert.", "d) L'acte dictat per un òrgan incompetent no manifesta."], a: 2 },
+        { q: "28.- Un acte és anul·lable quan:", o: ["a) És constitutiu d'infracció penal.", "b) Té un contingut impossible.", "c) Incorre en qualsevol infracció de l'ordenament jurídic, inclosa la desviació de poder.", "d) S'ha dictat per un òrgan manifestament incompetent."], a: 2 },
+        { q: "29.- L'execució forçosa per part de l'Administració es pot fer per:", o: ["a) Constrenyiment sobre el patrimoni.", "b) Execució subsidiària.", "c) Multa coercitiva i compulsió sobre les persones.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "30.- El principi de transparència s'articula mitjançant:", o: ["a) La publicitat activa.", "b) El dret d'accés a la informació pública.", "c) El BOE i el DOGC.", "d) Les respostes a) i b) són correctes."], a: 3 },
+        { q: "31.- La capacitat d'obrar davant les administracions públiques la tenen:", o: ["a) Els majors de 18 anys.", "b) Els menors d'edat per a l'exercici de drets que la llei els permeti sense assistència.", "c) Les persones jurídiques.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "32.- L'interessat pot actuar per mitjà de representant?", o: ["a) No, l'actuació ha de ser sempre personal.", "b) Sí, qualsevol persona amb capacitat d'obrar pot ser representant.", "c) Només si el representant és advocat.", "d) Només en procediments sancionadors."], a: 1 },
+        { q: "33.- Per a quins actes es requereix acreditar la representació?", o: ["a) Per presentar sol·licituds.", "b) Per interposar recursos.", "c) Per desistir de drets.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "34.- L'Administració ha de demanar l'esmena d'una sol·licitud incompleta en un termini de:", o: ["a) 5 dies.", "b) 10 dies.", "c) 15 dies.", "d) 20 dies."], a: 1 },
+        { q: "35.- El dret d'accés a la informació pública es pot denegar si:", o: ["a) Perjudica la seguretat pública.", "b) Perjudica la prevenció i investigació d'il·lícits.", "c) Atempta contra la intimitat de les persones.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "36.- Els informes preceptius s'han d'emetre en el termini de:", o: ["a) 5 dies.", "b) 10 dies.", "c) 15 dies.", "d) Un mes."], a: 1 },
+        { q: "37.- Si un informe preceptiu no s'emet en termini:", o: ["a) Es paralitza el procediment indefinidament.", "b) Es poden prosseguir les actuacions, excepte si és un informe vinculant.", "c) S'entén que l'informe és favorable.", "d) S'ha de tornar a començar l'expedient."], a: 1 },
+        { q: "38.- Què és la convalidació d'un acte?", o: ["a) L'anul·lació d'un acte per part de l'interessat.", "b) L'esmena dels vicis d'un acte anul·lable per l'òrgan que el va dictar.", "c) La confirmació d'un acte nul de ple dret.", "d) El vistiplau del jutge a un acte administratiu."], a: 1 },
+        { q: "39.- Els actes administratius s'han de motivar quan:", o: ["a) Limitin drets subjectius o interessos legítims.", "b) Resolguin recursos.", "c) S'apartin del criteri seguit en actuacions precedents.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "40.- Els actes administratius produeixen efectes des de:", o: ["a) La data en què es dicten, llevat que es disposi el contrari.", "b) El dia de la seva publicació al diari oficial.", "c) Els 15 dies de la seva notificació.", "d) Quan l'interessat hi dona la conformitat."], a: 0 },
+        { q: "41.- La competència administrativa és:", o: ["a) Delegable en la seva titularitat.", "b) Irrenunciable i s'ha d'exercir per l'òrgan que la té atribuïda.", "c) Opcional per al funcionari.", "d) Sempre compartida entre dos òrgans."], a: 1 },
+        { q: "42.- La delegació de signatures:", o: ["a) Altera la competència de l'òrgan.", "b) Requereix ser publicada per a la seva validesa.", "c) No altera la competència del delegant i no cal publicar-la.", "d) Només es pot fer en favor de superiors jeràrquics."], a: 2 },
+        { q: "43.- L'encomana de gestió s'utilitza per a:", o: ["a) Transferir la titularitat d'una competència.", "b) Activitats de caràcter material o tècnic per raons d'eficàcia.", "c) Dictar resolucions en nom d'un altre òrgan.", "d) Evitar la recusació."], a: 1 },
+        { q: "44.- L'avocació consisteix en:", o: ["a) Que un òrgan superior atregui cap a si el coneixement d'un assumpte d'un inferior.", "b) Delegar una competència cap a un inferior.", "c) Demanar un informe a un òrgan consultiu.", "d) Anul·lar un acte administratiu."], a: 0 },
+        { q: "45.- Són causes de recusació d'una autoritat:", o: ["a) Tenir interès personal en l'assumpte.", "b) Tenir parentiu de consanguinitat dins del quart grau amb l'interessat.", "c) Amistat íntima o enemistat manifesta.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "46.- El procediment sancionador ha de garantir:", o: ["a) La separació entre la fase instructora i la sancionadora.", "b) La presumpció de no existència de responsabilitat administrativa.", "c) El dret a ser notificat dels fets i la sanció.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "47.- El termini de prescripció de les infraccions molt greus és de:", o: ["a) 1 any.", "b) 2 anys.", "c) 3 anys.", "d) 5 anys."], a: 2 },
+        { q: "48.- Les sancions imposades per infraccions molt greus prescriuen al cap de:", o: ["a) 1 any.", "b) 2 anys.", "c) 3 anys.", "d) 5 anys."], a: 2 },
+        { q: "49.- La responsabilitat patrimonial de les Administracions Públiques és:", o: ["a) Subjectiva (cal provar la culpa).", "b) Objectiva (n'hi ha prou amb el dany i el nexe causal).", "c) Només per dany moral.", "d) Inexistent si l'administració actua legalment."], a: 1 },
+        { q: "50.- El dret a reclamar la responsabilitat patrimonial prescriu al cap de:", o: ["a) 6 mesos.", "b) 1 any des de la producció del fet o la curació de les lesions.", "c) 2 anys.", "d) 5 anys."], a: 1 },
+        { q: "51.- El silenci en els procediments de responsabilitat patrimonial és:", o: ["a) Positiu.", "b) Negatiu (desestimatori).", "c) No hi ha silenci.", "d) Depèn de la quantia."], a: 1 },
+        { q: "52.- La durada màxima del procediment simplificat és de:", o: ["a) 15 dies.", "b) 30 dies.", "c) 2 mesos.", "d) 3 mesos."], a: 1 },
+        { q: "53.- Què és la desviació de poder?", o: ["a) L'exercici de potestats per a fins diferents dels fixats per l'ordenament jurídic.", "b) Dictar un acte sense competència.", "c) No motivar una resolució.", "d) Tardar més del compte a resoldre."], a: 0 },
+        { q: "54.- L'Administració pot suspendre un acte d'ofici si:", o: ["a) Pot causar perjudicis d'impossible reparació.", "b) S'impugna per causa de nul·litat de ple dret.", "c) L'interessat ho demana i no hi ha resposta en un mes.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "55.- El recurs extraordinari de revisió s'interposa davant:", o: ["a) El superior jeràrquic.", "b) L'òrgan que va dictar l'acte.", "c) El Jutjat del Contenciós.", "d) El Parlament."], a: 1 },
+        { q: "56.- El període de prova en el procediment administratiu té una durada de:", o: ["a) 5 a 10 dies.", "b) 10 a 30 dies.", "c) 1 a 2 mesos.", "d) El que decideixi l'instructor lliurement."], a: 1 },
+        { q: "57.- Els fets constatats per agents de l'autoritat que es recullin en actes de formalització:", o: ["a) Tenen valor probatori sens perjudici de les proves en contrari.", "b) Són veritats absolutes.", "c) No tenen cap valor.", "d) Requereixen ratificació judicial."], a: 0 },
+        { q: "58.- La caducitat del procediment sancionador es produeix:", o: ["a) Per la mort de l'interessat.", "b) Per la manca de resolució i notificació en el termini màxim establert.", "c) Per la manca d'al·legacions de l'interessat.", "d) Quan ho decideix l'òrgan sancionador."], a: 1 },
+        { q: "59.- La compareixença de les persones davant les oficines públiques:", o: ["a) És sempre obligatòria.", "b) Només és obligatòria si està previst en una norma amb rang de llei.", "c) Mai és obligatòria.", "d) Només per als funcionaris."], a: 1 },
+        { q: "60.- El Registre Electrònic d'Apoderaments permet:", o: ["a) Pagar les taxes.", "b) Inscriure les representacions per actuar davant l'Administració.", "c) Consultar el sou dels funcionaris.", "d) Registrar les multes de trànsit."], a: 1 },
+        { q: "61.- El dret a utilitzar el català davant l'Administració de la Generalitat és:", o: ["a) Un dret dels ciutadans i una obligació de l'Administració.", "b) Opcional per a l'Administració.", "c) Només si el funcionari el sap parlar.", "d) Prohibit en documents oficials."], a: 0 },
+        { q: "62.- Quina és la finalitat del tràmit d'audiència?", o: ["a) Que l'Administració expliqui què farà.", "b) Que l'interessat pugui al·legar i presentar documents abans de la proposta de resolució.", "c) Fer un examen oral a l'interessat.", "d) Arribar a un pacte econòmic."], a: 1 },
+        { q: "63.- La resolució d'un procediment ha de ser:", o: ["a) Congruent amb les peticions formulades.", "b) Decidir totes les qüestions derivades de l'expedient.", "c) Motivada en els casos previstos per la llei.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "64.- El desistiment d'una sol·licitud per l'interessat:", o: ["a) Implica la pèrdua del dret material.", "b) L'Administració ha d'acceptar-lo i declarar conclus l'expedient.", "c) No es permet en procediments de subvencions.", "d) Requereix l'aprovació d'un jutge."], a: 1 },
+        { q: "65.- La suspensió del termini per resoldre es pot produir quan:", o: ["a) S'hagi de demanar un informe preceptiu a un altre òrgan.", "b) S'hagin de realitzar proves tècniques o anàlisis contradictòries.", "c) S'iniciïn negociacions per a un pacte convencional.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "66.- La publicació substitueix la notificació quan:", o: ["a) L'acte tingui per destinatari una pluralitat indeterminada de persones.", "b) Es tracti d'actes en processos selectius o de concurrència competitiva.", "c) No s'hagi pogut practicar la notificació personal després de dos intents.", "d) Totes les anteriors són correctes."], a: 3 },
+        { q: "67.- En un recurs d'alçada, la resolució pot empitjorar la situació inicial del recurrent?", o: ["a) Sí, si es descobreixen nous fets.", "b) No, pel principi de 'reformatio in peius'.", "c) Sí, si l'administració ho considera just.", "d) Només si hi ha mala fe."], a: 1 },
+        { q: "68.- Els reglaments administratius:", o: ["a) Són de rang superior a la llei.", "b) Són de rang inferior a la llei.", "c) Poden contradir la Constitució.", "d) No obliguen els ciutadans."], a: 1 },
+        { q: "69.- L'òrgan competent per resoldre un recurs de reposició és:", o: ["a) El superior jeràrquic.", "b) El mateix òrgan que va dictar l'acte recorregut.", "c) El Conseller.", "d) El Jutge de Guàrdia."], a: 1 },
+        { q: "70.- El silenci administratiu positiu es pot acreditar mitjançant:", o: ["a) Qualsevol mitjà de prova admès en dret, inclòs el certificat de silenci.", "b) Només amb una sentència judicial.", "c) Amb un testimoni del funcionari.", "d) No es pot acreditar."], a: 0 },
+
+        { q: "71.- El principi de non bis in idem suposa que:", o: ["a) Una persona no pot ser sancionada dues vegades per la mateixa infracció quan hi ha identitat de subjecte, identitat de fet i identitat de fonament.", "b) Una persona pot ser sancionada dues vegades per la mateixa infracció, sempre que hi hagi identitat de subjecte, identitat de fet i identitat de fonament.", "c) Només constitueixen infraccions administratives les vulneracions de l'ordenament jurídic que estan previstes a la llei.", "d) Cap de les respostes és correcta."], a: 0 },
+        { q: "72.- Són titulars de la potestat sancionadora:", o: ["a) Els òrgans administratius que la tinguin atribuïda de forma expressa, únicament i exclusivament, quan aquesta atribució estigui prevista en una disposició amb rang de llei.", "b) Tots els òrgans administratius.", "c) Els òrgans administratius dependents de l'Administració local, autonòmica i estatal, i que tenen atribuïda aquesta potestat mitjançant un acte administratiu.", "d) Només els òrgans administratius que la tinguin atribuïda de forma expressa, a través d'una disposició amb rang de llei o amb rang reglamentari."], a: 3 },
+        { q: "73.- La persona interessada en el procediment sancionador és:", o: ["a) Aquell a qui s'imputa una presumpta infracció, sempre que sigui titular de drets o interessos legítims que es puguin veure afectats per la resolució administrativa i es personi en el procediment.", "b) Únicament qui promou el procediment administratiu, com a titular de drets o interessos legítims que es poden veure afectats per la resolució administrativa.", "c) Aquell a qui s'imputa una presumpta infracció.", "d) Qui insta el procediment, qui s'hi persona amb posterioritat i tots aquells que ni insten el procediment ni s'hi personen són titulars de drets o interessos legítims que es poden veure afectats per la resolució administrativa."], a: 2 },
+        { q: "74.- La presumpció de veracitat:", o: ["a) Permet que qualsevol actuació d'un agent es consideri veraç, sense possibilitat de contradicció per part dels ciutadans.", "b) Permet que qualsevol actuació d'un agent es consideri veraç, sempre que l'agent aporti proves que fonamentin la seva actuació.", "c) Permet que qualsevol actuació d'un ciutadà es consideri veraç, sempre que un agent no demostri el contrari i sempre que l'agent que gaudeixi de la condició d'autoritat estigui en exercici de les seves funcions i ho formalitzi en un document públic.", "d) Cap de les respostes és correcta."], a: 3 },
+        { q: "75.- Les mesures cautelars en el procediment sancionador:", o: ["a) Es podran adoptar sempre que ho decideixi l'òrgan administratiu competent, sense necessitat de motivació, ja que deriven de la potestat reglamentària de l'Administració pública.", "b) No es podran adoptar mai si no hi ha consentiment de l'interessat, ja que aquestes mesures restringeixen els drets dels interessats i les garanties del procediment sancionador.", "c) Només es podran adoptar si estan previstes a les normes i l'òrgan competent les adopta mitjançant un acord motivat.", "d) Només es podran adoptar si estan previstes a les normes i l'òrgan competent les adopta mitjançant un acord motivat, i sempre qe ja s'hagi dictat una resolució sancionadora."], a: 2 },
+        { q: "76.- Quan en un procediment sancionador l'Administració no resol en el termini previst:", o: ["a) Es dona la figura jurídica del silenci administratiu i en aquest cas és positiu.", "b) El procediment caduca.", "c) Es dona la figura jurídica del silenci administratiu i en aquest cas és negatiu.", "d) La sanció caduca."], a: 1 },
+        { q: "77.- La regla general és que la interposició d'un recurs administratiu suspèn la seva execució:", o: ["a) Excepte que l'òrgan administratiu que ha de resoldre el recurs ordeni l'execució de l'acte administratiu.", "b) Excepte que la interposició del recurs estigui fonamentada en una causa de nul·litat de ple dret de l'acte administratiu.", "c) Excepte que la interposició del recurs estigui fonamentada en una causa de nul·litat de ple dret de l'acte administratiu o bé que la manca d'execució pugui causar perjudicis de difícil reparació, i sempre que es presti una caució.", "d) Cap resposta és correcta."], a: 3 },
+        { q: "78.- La prescripció de les infraccions en el dret administratiu implica:", o: ["a) En dret administratiu les infraccions no prescriuen, només prescriuen les sancions.", "b) La impossibilitat d'executar una sanció.", "c) La impossibilitat de denunciar la infracció.", "d) La impossibilitat d'imposar una sanció."], a: 3 },
+        { q: "79.- Per tal de dotar de garanties el procediment sancionador, és necessari:", o: ["a) Que l'òrgan encarregat de la fase instructora practiqui totes les diligències necessàries per tal que la decisió que ell mateix adopti sigui la més adequada i coherent.", "b) Que hi hagi una clara separació entre la fase instructora i la fase decisòria, tot i que la llei admet que totes dues fases s'encomanin a un mateix òrgan.", "c) Que hi hagi una clara separació entre la fase instructora i la fase decisòria, i que cada una d'aquestes fases s'encomani a un òrgan diferent.", "d) Que l'òrgan encarregat de la fase instructora i l'òrgan encarregat de la fase decisòria respectin els principis de coordinació i cooperació per tal que la decisió que s'adopti sigui la més ajustada a dret."], a: 2 },
+        { q: "80.- En el procediment sancionador ordinari general, una vegada redactat l'acord d'iniciació i practicades totes les diligències oportunes per acreditar els fets...", o: ["a) Es dicta una proposta de resolució que podrà ser sancionadora o de sobreseïment.", "b) Es dicta una resolució que pot ser sancionadora o de sobreseïment.", "c) Es dicta la resolució sancionadora.", "d) Prèviament a la resolució definitiva hi ha d'haver sempre una proposta de resolució sancionadora."], a: 0 }
+
+
+
+
+    ];
+
+    let quizQuestions = [];
+    let currentPage = 0;
+    const questionsPerPage = 5;
+    let score = 0;
+    let answeredQuestions = {};
+
+    function initQuiz() {
+        quizQuestions = [...questions]; 
+        renderPage();
+    }
+
+    function renderPage() {
+        const container = document.getElementById('questions-area');
+        container.innerHTML = '';
+        const start = currentPage * questionsPerPage;
+        const end = Math.min(start + questionsPerPage, quizQuestions.length);
+
+        for (let i = start; i < end; i++) {
+            const item = quizQuestions[i];
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            block.innerHTML = `<span class="question-text">${i + 1}. ${item.q}</span>`;
+
+            const optsDiv = document.createElement('div');
+            optsDiv.className = 'options-container';
+
+            item.o.forEach((optText, idx) => {
+                const optEl = document.createElement('div');
+                optEl.className = 'option';
+                optEl.innerText = optText;
+
+                if (answeredQuestions[i] !== undefined) {
+                    optEl.classList.add('locked');
+                    if (idx === item.a) optEl.classList.add('correct');
+                    if (answeredQuestions[i] === idx && idx !== item.a) optEl.classList.add('incorrect');
+                } else {
+                    optEl.onclick = () => {
+                        answeredQuestions[i] = idx;
+                        if (idx === item.a) score++;
+                        renderPage();
+                        checkPage();
+                    };
+                }
+                optsDiv.appendChild(optEl);
+            });
+            block.appendChild(optsDiv);
+            container.appendChild(block);
+        }
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('page-indicator').innerText = `Pàgina ${currentPage + 1} de ${Math.ceil(quizQuestions.length / questionsPerPage)}`;
+        document.getElementById('score-counter').innerText = `Encerts: ${score} / ${quizQuestions.length}`;
+    }
+
+    function checkPage() {
+        const start = currentPage * questionsPerPage;
+        const end = Math.min(start + questionsPerPage, quizQuestions.length);
+        let done = true;
+        for (let i = start; i < end; i++) if (answeredQuestions[i] === undefined) done = false;
+        document.getElementById('next-button').disabled = !done;
+    }
+
+    function changePage() {
+        currentPage++;
+        if (currentPage * questionsPerPage >= quizQuestions.length) {
+            showFinalResults();
+        } else {
+            renderPage();
+            window.scrollTo(0,0);
+            document.getElementById('next-button').disabled = true;
+        }
+    }
+
+    function showFinalResults() {
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('final-score').innerText = `${score} / ${quizQuestions.length}`;
+        const list = document.getElementById('failed-questions-list');
+        list.innerHTML = '';
+        quizQuestions.forEach((item, index) => {
+            if (answeredQuestions[index] !== item.a) {
+                const div = document.createElement('div');
+                div.className = 'review-item';
+                div.innerHTML = `<strong>${index+1}. ${item.q}</strong><br><span style="color:var(--error)">Marcada: ${item.o[answeredQuestions[index]] || "Cap"}</span><br><span class="correct-answer-hint">Correcta: ${item.o[item.a]}</span>`;
+                list.appendChild(div);
+            }
+        });
+    }
+
+    initQuiz();
+</script>
+</body>
+</html>
